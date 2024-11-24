@@ -35,6 +35,15 @@ jobs:
         with:
           sarif_file: results.sarif
 
+      - name: Run Terrascan
+        id: terrascan
+        uses: tenable/terrascan-action@main
+        with:
+          iac_type: 'terraform'
+          iac_version: 'v14'
+          policy_type: 'aws'
+          only_warn: true
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -54,8 +63,8 @@ jobs:
       - name: Terraform Plan
         run: terraform plan
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
+      #- name: Terraform Apply
+      #  run: terraform apply -auto-approve
 
   build-aws-infra-notifications:
     runs-on: ubuntu-latest
