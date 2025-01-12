@@ -6,6 +6,10 @@ on:
 
 jobs:
   build-aws-infra:
+    permissions:
+      contents: read # for actions/checkout to fetch code
+      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+      
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout Code
@@ -24,6 +28,12 @@ jobs:
           output_format: cli,sarif
           output_file_path: console,results.sarif
           soft_fail: true
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
+        with:
+          sarif_file: results.sarif
           
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
